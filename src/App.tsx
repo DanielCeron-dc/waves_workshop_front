@@ -1,58 +1,50 @@
 import { useState } from "react";
 import Credits from "./Credits";
-import ButtonGroup from "./ButtonGroup";
+import SlideBar from "./SliderBar";
 
 function App() {
-  const [time, setTime] = useState(5);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
 
-  const generateAnimation = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ time }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(`Error: ${error.error}`);
-      } else {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setOutputUrl(url);
-      }
-    } catch (error) {
-      alert(`Error: ${error}`);
-    }
-  };
-
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-around",
-      width: "100vw",
-      maxHeight: "100vh",
-      overflow: "hidden",
-    }}>
-      <div style={{
+    <div
+      style={{
         display: "flex",
-        width: "40%",
-        justifyContent: "center",
-        flexDirection: "column",
-        alignItems: "center",
-      }}>
-        <h1>Ondas trabajo final</h1>
+        flexDirection: "row",
+        width: "100vw",
+        minHeight: "100vh", // Permite que el contenido crezca dinámicamente
+        overflowY: "auto", // Habilita el scroll vertical
+      }}
+    >
+      {/* SlideBar a la izquierda */}
+      <SlideBar setOutputUrl={setOutputUrl} />
+
+      {/* Contenedor principal */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          flex: 1, // Ocupa el espacio restante
+          padding: "10px",
+        }}
+      >
+        <h1>Ondas Trabajo Final</h1>
         <Credits />
-        <ButtonGroup />
+
+        {/* Contenedor para el video generado */}
+        {outputUrl && (
+          <div
+            style={{
+              marginTop: "20px",
+              textAlign: "center",
+            }}
+          >
+            <h2>Resultado</h2>
+            <video src={outputUrl} controls width="600"></video>
+          </div>
+        )}
       </div>
-      {outputUrl && (
-        <div>
-          <h2>Resultado</h2>
-          <video src={outputUrl} controls width="600"></video>
-        </div>
-      )}
     </div>
   );
 }

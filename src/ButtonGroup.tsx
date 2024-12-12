@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+
 const ButtonGroup: React.FC = () => {
     const [arg1, setArg1] = useState<string>("");
     const [arg2, setArg2] = useState<string>("");
@@ -12,10 +13,11 @@ const ButtonGroup: React.FC = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/run-script", {
+            let time = arg1;
+            const response = await fetch("http://localhost:5000/run", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ script, arg1, arg2 }),
+                body: JSON.stringify({ script, time, arg2 }),
             });
 
             const data = await response.json();
